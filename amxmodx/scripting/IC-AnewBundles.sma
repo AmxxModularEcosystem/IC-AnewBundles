@@ -5,15 +5,6 @@
 
 #define BUNDLE_NAME_MAX_LEN 32
 
-/*
-<call>
-plugin = IC-AnewBundles.amxx
-name = <Название бонуса>
-function = GiveBundle
-flags = <Название пушки>
-; ...остальные параметры...
-*/
-
 new Trie:g_tBundles = Invalid_Trie;
 
 public VipM_IC_OnInitTypes() {
@@ -82,7 +73,7 @@ LoadBundlesFromDir(sDirPath[]) {
 
         regex_substr(iRegEx_FileName, 1, sFile, charsmax(sFile));
 
-        TrieSetCell(g_tBundles, sFile, Json_GetFile(fmt("%s%s.json", sDirPath, sFile)));
+        TrieSetCell(g_tBundles, sFile, VipM_IC_JsonGetItems(Json_GetFile(fmt("%s%s.json", sDirPath, sFile))));
     } while (next_file(iDirHandler, sFile, charsmax(sFile), iType));
 
     regex_free(iRegEx_FileName);
