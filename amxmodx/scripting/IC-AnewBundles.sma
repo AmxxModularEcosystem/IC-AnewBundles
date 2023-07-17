@@ -18,9 +18,10 @@ public plugin_precache() {
 public GiveBundle(const UserId, const sBundleName[]) {
     new Array:aItems;
     if (TrieGetCell(g_tBundles, sBundleName, aItems)) {
-        VipM_IC_GiveItems(UserId, aItems);
+        return VipM_IC_GiveItems(UserId, aItems);
     } else {
         log_amx("[WARNING] Bundle '%s' not found.", sBundleName);
+        return false;
     }
 }
 
