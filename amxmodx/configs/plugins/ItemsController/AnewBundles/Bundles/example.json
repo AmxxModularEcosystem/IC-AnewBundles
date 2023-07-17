@@ -1,0 +1,10 @@
+[
+    {
+        "Type": "Weapon",
+        "Name": "weapon_awp"
+    },
+    {
+        "Type": "Weapon",
+        "Name": "weapon_deagle"
+    }
+]
