@@ -13,6 +13,16 @@ public plugin_precache() {
     VipM_IC_Init();
 
     LoadBundles();
+
+    // debug only
+    // register_clcmd("IC_AnewBundles_Take", "@ClCmd_Take");
+}
+
+@ClCmd_Take(const UserId) {
+    new sBundleName[BUNDLE_NAME_MAX_LEN];
+    read_argv(1, sBundleName, charsmax(sBundleName));
+
+    GiveBundle(UserId, sBundleName);
 }
 
 public GiveBundle(const UserId, const sBundleName[]) {
@@ -31,10 +41,14 @@ LoadBundles() {
 
     if (file_exists(GetConfigPath("Bundles.json"))) {
         LoadBundlesFromFile(GetConfigPath("Bundles.json"));
+    } else {
+        // log_amx("[DEBUG] File `%s` is not exists.", GetConfigPath("Bundles.json"));
     }
 
     if (dir_exists(GetConfigPath("Bundles/"))) {
         LoadBundlesFromDir(GetConfigPath("Bundles/"));
+    } else {
+        // log_amx("[DEBUG] Directory `%s` is not exists.", GetConfigPath("Bundles/"));
     }
 
     log_amx("[INFO] Loaded %d bundles.", TrieGetSize(g_tBundles));
@@ -57,6 +71,7 @@ LoadBundlesFromFile(const sFilePath[]) {
         json_object_get_name(jBundles, i, sBundleName, charsmax(sBundleName));
 
         TrieSetCell(g_tBundles, sBundleName, VipM_IC_JsonGetItems(json_object_get_value_at(jBundles, i)));
+        // log_amx("[DEBUG] Bundle `%s` loaded from file.", sBundleName);
     }
 }
 
@@ -82,6 +97,7 @@ LoadBundlesFromDir(sDirPath[]) {
         regex_substr(iRegEx_FileName, 1, sFile, charsmax(sFile));
 
         TrieSetCell(g_tBundles, sFile, VipM_IC_JsonGetItems(Json_GetFile(fmt("%s%s.json", sDirPath, sFile))));
+        // log_amx("[DEBUG] Bundle `%s` loaded from folder.", sFile);
     } while (next_file(iDirHandler, sFile, charsmax(sFile), iType));
 
     regex_free(iRegEx_FileName);
