@@ -7,8 +7,10 @@
 
 new Trie:g_tBundles = Invalid_Trie;
 
-public VipM_IC_OnInitTypes() {
+public plugin_precache() {
     register_plugin("[IC] ANew Bundles", "1.0.0", "ArKaNeMaN");
+
+    VipM_IC_Init();
 
     LoadBundles();
 }
