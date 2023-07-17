@@ -46,6 +46,11 @@ LoadBundlesFromFile(const sFilePath[]) {
         return;
     }
 
+    if (!json_is_object(jBundles)) {
+        log_amx("[ERROR] File '%s' must contains JSON object.", sFilePath);
+        return;
+    }
+
     for (new i = 0, ii = json_object_get_count(jBundles); i < ii; ++i) {
         new sBundleName[BUNDLE_NAME_MAX_LEN];
         json_object_get_name(jBundles, i, sBundleName, charsmax(sBundleName));
