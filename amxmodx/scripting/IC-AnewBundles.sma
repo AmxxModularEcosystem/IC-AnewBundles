@@ -6,6 +6,7 @@
 #define BUNDLE_NAME_MAX_LEN 32
 
 new Trie:g_tBundles = Invalid_Trie;
+new Array:g_aBundleNames = Invalid_Array;
 
 public plugin_precache() {
     register_plugin("[IC] ANew Bundles", "1.0.0", "ArKaNeMaN");
@@ -35,9 +36,18 @@ public GiveBundle(const UserId, const sBundleName[]) {
     }
 }
 
+public GiveRandomBundle(const UserId) {
+    new sBundleName[BUNDLE_NAME_MAX_LEN];
+    ArrayGetString(g_aBundleNames, random_num(0, ArraySize(g_aBundleNames)), sBundleName, charsmax(sBundleName));
+
+    GiveBundle(UserId, sBundleName);
+}
+
 LoadBundles() {
     TrieDestroy(g_tBundles);
+    ArrayDestroy(g_aBundleNames);
     g_tBundles = TrieCreate();
+    g_aBundleNames = ArrayCreate(BUNDLE_NAME_MAX_LEN, 1);
 
     if (file_exists(GetConfigPath("Bundles.json"))) {
         LoadBundlesFromFile(GetConfigPath("Bundles.json"));
@@ -71,6 +81,7 @@ LoadBundlesFromFile(const sFilePath[]) {
         json_object_get_name(jBundles, i, sBundleName, charsmax(sBundleName));
 
         TrieSetCell(g_tBundles, sBundleName, VipM_IC_JsonGetItems(json_object_get_value_at(jBundles, i)));
+        ArrayPushString(g_aBundleNames, sBundleName);
         // log_amx("[DEBUG] Bundle `%s` loaded from file.", sBundleName);
     }
 }
@@ -97,6 +108,7 @@ LoadBundlesFromDir(sDirPath[]) {
         regex_substr(iRegEx_FileName, 1, sFile, charsmax(sFile));
 
         TrieSetCell(g_tBundles, sFile, VipM_IC_JsonGetItems(Json_GetFile(fmt("%s%s.json", sDirPath, sFile))));
+        ArrayPushString(g_aBundleNames, sFile);
         // log_amx("[DEBUG] Bundle `%s` loaded from folder.", sFile);
     } while (next_file(iDirHandler, sFile, charsmax(sFile), iType));
 
