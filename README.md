@@ -7,6 +7,35 @@
 - AmxModX версии 1.9.0 или новее;
 - ItemsController из [VipModular](https://github.com/ArKaNeMaN/amxx-VipModular-pub/releases) (Ядро не требуется).
 
+## Функции выдачи наборов
+
+В плагине имеются следующие функции для выдачи наборов:
+- `GiveBundle` - Выдаёт конкретный набор по его названию (передаётся вторым параметром)
+- `GiveRandomBundle` - Выдаёт случайный набор
+
+### Пример использования `GiveBundle`
+
+```ini
+<call>
+plugin = IC-AnewBundles.amxx
+name = Тестовый бонус
+function = GiveBundle
+flags = TestBundle
+points = 5
+```
+
+Где `TestBundle` - название набора.
+
+### Пример использования `GiveRandomBundle`
+
+```ini
+<call>
+plugin = IC-AnewBundles.amxx
+name = Случайный бонус
+function = GiveRandomBundle
+points = 3
+```
+
 ## Настройка
 
 Создавать наборы можно двумя способами:
