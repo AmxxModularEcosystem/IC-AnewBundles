@@ -17,13 +17,50 @@ public plugin_precache() {
 
     // debug only
     // register_clcmd("IC_AnewBundles_Take", "@ClCmd_Take");
+
+    // IC_AnewBundle_Give #<UserId>|<AuthId>|<UserName> <BundleName>
+    register_srvcmd("IC_AnewBundle_Give", "@SrvCmd_Give");
+
+    // IC_AnewBundle_Give #<UserId>|<AuthId>|<UserName>
+    register_srvcmd("IC_AnewBundle_GiveRandom", "@SrvCmd_GiveRandom");
 }
 
 @ClCmd_Take(const UserId) {
+    if (!is_user_alive(UserId)) {
+        client_print(UserId, print_console, "Вы мертвы.");
+        return PLUGIN_HANDLED;
+    }
+
     new sBundleName[BUNDLE_NAME_MAX_LEN];
     read_argv(1, sBundleName, charsmax(sBundleName));
 
     GiveBundle(UserId, sBundleName);
+    return PLUGIN_HANDLED;
+}
+
+@SrvCmd_Give() {
+    new UserId = read_argv_player(1);
+    if (!UserId || !is_user_alive(UserId)) {
+        server_print("Selected player is dead.");
+        return PLUGIN_HANDLED;
+    }
+    
+    new sBundleName[BUNDLE_NAME_MAX_LEN];
+    read_argv(2, sBundleName, charsmax(sBundleName));
+
+    GiveBundle(UserId, sBundleName);
+    return PLUGIN_HANDLED;
+}
+
+@SrvCmd_GiveRandom() {
+    new UserId = read_argv_player(1);
+    if (!UserId || !is_user_alive(UserId)) {
+        server_print("Selected player is dead.");
+        return PLUGIN_HANDLED;
+    }
+
+    GiveRandomBundle(UserId);
+    return PLUGIN_HANDLED;
 }
 
 public GiveBundle(const UserId, const sBundleName[]) {
@@ -147,4 +184,54 @@ GetConfigPath(const sPath[]) {
 	formatex(sOut, charsmax(sOut), "%s/plugins/ItemsController/AnewBundles/%s", __amxx_configsdir, sPath);
 
 	return sOut;
+}
+
+read_argv_player(const iArgNum, const bStrictName = false) {
+    new const STEAM_ID_PREFIX[] = "STEAM_";
+    new const VALVE_ID_PREFIX[] = "VALVE_";
+
+    static sArg[64];
+    read_argv(iArgNum, sArg, charsmax(sArg));
+
+    new iArgLen = strlen(sArg);
+
+    if (sArg[0] == '#') {
+        new i = str_to_num(sArg[1]);
+        if (i >= 1 && i <= MAX_PLAYERS) {
+            return i;
+        } else {
+            return 0;
+        }
+    } else if (
+        equal(sArg, STEAM_ID_PREFIX, charsmax(STEAM_ID_PREFIX))
+        || equal(sArg, VALVE_ID_PREFIX, charsmax(VALVE_ID_PREFIX))
+    ) {
+        for (new i = 1; i <= MAX_PLAYERS; ++i) {
+            if (!is_user_connected(i)) {
+                continue;
+            }
+
+            static sSteamId[MAX_AUTHID_LENGTH];
+            get_user_authid(i, sSteamId, charsmax(sSteamId));
+
+            if (equal(sSteamId, sArg)) {
+                return i;
+            }
+        }
+    } else {
+        for (new i = 1; i <= MAX_PLAYERS; ++i) {
+            if (!is_user_connected(i)) {
+                continue;
+            }
+
+            static sName[MAX_NAME_LENGTH];
+            get_user_name(i, sName, charsmax(sName));
+            
+            if (equal(sName, sArg, bStrictName ? 0 : iArgLen)) {
+                return i;
+            }
+        }
+    }
+
+    return 0;
 }
