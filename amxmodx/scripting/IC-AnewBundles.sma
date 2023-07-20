@@ -21,7 +21,7 @@ public plugin_precache() {
     // IC_AnewBundle_Give #<UserId>|<AuthId>|<UserName> <BundleName>
     register_srvcmd("IC_AnewBundle_Give", "@SrvCmd_Give");
 
-    // IC_AnewBundle_Give #<UserId>|<AuthId>|<UserName>
+    // IC_AnewBundle_GiveRandom #<UserId>|<AuthId>|<UserName>
     register_srvcmd("IC_AnewBundle_GiveRandom", "@SrvCmd_GiveRandom");
 }
 
