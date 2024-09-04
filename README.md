@@ -53,7 +53,7 @@ points = 3
 
 Можно использовать одновременно оба способа.
 
-[Подробнее о структуре предметов для ItemsController...](https://github.com/ArKaNeMaN/amxx-VipModular-pub/blob/master/readme/items.md)
+[Подробнее о структуре предметов для ItemsController...](https://github.com/ArKaNeMaN/amxx-VipModular-pub/blob/master/readme/extensions/items.md)
 
 ### Способ первый
 
